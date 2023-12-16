@@ -11,6 +11,10 @@ app = Flask(__name__)
 posts = {}
 lock = threading.Lock()
 
+@app.route('/test_form')
+def indexForm():
+    return render_template('index.html')
+
 def generate_key():
     return secrets.token_urlsafe(32)
 
