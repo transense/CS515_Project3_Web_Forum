@@ -13,6 +13,18 @@ lock = threading.Lock()
 def generate_key():
     return secrets.token_urlsafe(32)
 
+def get_user_by_id(user_id):
+    for user in users:
+        if user['id'] == user_id:
+            return user
+    return None
+
+def get_post_by_id(post_id):
+    for post in posts:
+        if post['id'] == post_id:
+            return post
+    return None
+
 def get_current_timestamp():
     return datetime.datetime.utcnow().isoformat()
 
