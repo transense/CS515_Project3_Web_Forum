@@ -11,6 +11,12 @@ app = Flask(__name__)
 posts = {}
 lock = threading.Lock()
 
+# Assuming you have a list of users defined somewhere
+users = [
+    {"id": 1, "username": "user1", "email": "user1@example.com"},
+    {"id": 2, "username": "user2", "email": "user2@example.com"}
+]
+
 <<<<<<< HEAD
 # Assuming you have a list of users defined somewhere
 users = [
@@ -170,3 +176,4 @@ def get_posts_by_date_range():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
