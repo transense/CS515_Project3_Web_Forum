@@ -11,12 +11,15 @@ app = Flask(__name__)
 posts = {}
 lock = threading.Lock()
 
+<<<<<<< HEAD
 # Assuming you have a list of users defined somewhere
 users = [
     {"id": 1, "username": "user1", "email": "user1@example.com"},
     {"id": 2, "username": "user2", "email": "user2@example.com"}
 ]
 
+=======
+>>>>>>> 0dc3e7e22924cd62fec33dd10ee477921e766102
 @app.route('/test_form')
 def indexForm():
     return render_template('index.html')

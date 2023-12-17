@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App Testing Form</title>
+</head>
+<body>
+    <h1>Create Post</h1>
+    <form action="/post" method="POST">
+        <label for="msg">Message:</label>
+        <input type="text" id="msg" name="msg" required>
+
+        <label for="user_id">User ID:</label>
+        <input type="number" id="user_id" name="user_id" required>
+
+        <label for="parent_id">Parent ID (optional):</label>
+        <input type="number" id="parent_id" name="parent_id">
+
+        <button type="submit">Create Post</button>
+    </form>
+
+    <hr>
+
+    <h1>Read Post</h1>
+    <form action="/post/{post_id}" method="GET">
+        <label for="read_post_id">Post ID:</label>
+        <input type="number" id="read_post_id" name="post_id" required>
+
+        <button type="submit">Read Post</button>
+    </form>
+
+    <hr>
+
+    <h1>Delete Post</h1>
+    <form action="/post/{post_id}/delete/{key}" method="DELETE">
+        <label for="delete_post_id">Post ID:</label>
+        <input type="number" id="delete_post_id" name="post_id" required>
+
+        <label for="delete_key">Key:</label>
+        <input type="text" id="delete_key" name="key" required>
+
+        <button type="submit">Delete Post</button>
+    </form>
+
+    <hr>
+
+    <h1>Get Posts by User</h1>
+    <form action="/user/{user_id}/posts" method="GET">
+        <label for="user_posts_id">User ID:</label>
+        <input type="number" id="user_posts_id" name="user_id" required>
+
+        <button type="submit">Get Posts by User</button>
+    </form>
+
+    <hr>
+
+    <h1>Get Posts by Date Range</h1>
+    <form action="/posts/date-range" method="GET">
+        <label for="start_date">Start Date (optional):</label>
+        <input type="datetime-local" id="start_date" name="start_date">
+
+        <label for="end_date">End Date (optional):</label>
+        <input type="datetime-local" id="end_date" name="end_date">
+
+        <button type="submit">Get Posts by Date Range</button>
+    </form>
+</body>
+</html>
