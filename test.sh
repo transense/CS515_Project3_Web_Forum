@@ -1,30 +1,22 @@
-#!/bin/bash
+# !/bin/sh
 
-# Display a message indicating the start of the test process
-echo "Running Postman tests..."
+# Exit immediately if Newman complains
+set -e
 
-# Start the server using run.sh in the background
+# Kill the server on exit
+trap 'kill $PID' EXIT
+
+# Start the server in the background and record the PID
 ./run.sh &
-
-# Capture the PID of the background process
 PID=$!
 
-# Wait for the server to start (adjust sleep time if needed)
-sleep 5
+# Run Newman with the specified Postman collections and environment
+echo "running tests..."
+newman run ./forum_multiple_posts.postman_collection.json -e ./env.json # Use the environment file
+newman run ./forum_post_read_delete.postman_collection.json -n 50 # 50 iterations
+newman run ./forum_get_user_meta_data.postman_collection.json
+newman run ./forum_edit_usermetadata.postman_collection.json
+newman run ./forum_get_user_meta_data.postman_collection.json
+newman run ./forum_search_post_by_user_ext_4_5.postman_collection.json
 
-# Run Postman collections using Newman
-newman run forum_multiple_posts.postman_collection.json -e env.json
-newman run forum_post_read_delete.postman_collection.json -n 50
-
-# Check the exit code of the Newman runs
-if [ $? -eq 0 ]; then
-    echo "Postman tests passed successfully."
-else
-    echo "Postman tests failed."
-fi
-
-# Kill the background server process
-kill $PID
-
-# Display a message indicating the completion of the test process
-echo "Test process completed."
+echo "tests completed"
