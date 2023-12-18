@@ -1,0 +1,69 @@
+{
+    "info": {
+        "_postman_id": "dab434b9-7c2f-449f-9fd7-c66d46069e14",
+        "name": "Create User Endpoint Tests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create User - Success",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"unique_metadata\":\"vibey\", \"non_unique_metadata\":\"non_unique\"}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:5000/user",
+                    "protocol": "http",
+                    "host": ["127", "0", "0", "1"],
+                    "port": "5000",
+                    "path": ["user"]
+                }
+            },
+            "response": [
+                {
+                    "name": "Status Code is 201",
+                    "test": "responseCode.code === 201"
+                },
+                {
+                    "name": "User ID is Present",
+                    "test": "jsonData.id !== undefined"
+                }
+            ]
+        },
+        {
+            "name": "Create User - Missing Metadata (Failure)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:5000/user",
+                    "protocol": "http",
+                    "host": ["127", "0", "0", "1"],
+                    "port": "5000",
+                    "path": ["user"]
+                }
+            },
+            "response": [
+                {
+                    "name": "Status Code is 400",
+                    "test": "responseCode.code === 400"
+                },
+                {
+                    "name": "Error Message is Present",
+                    "test": "jsonData.err !== undefined"
+                }
+            ]
+        }
+    ]
+}
