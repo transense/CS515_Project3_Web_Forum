@@ -48,9 +48,9 @@ Session Management: A challenging issue emerged in the application regarding ses
 
 1) Users and user keys
 2) User profiles (needs user)
-3) Date- and time-based range queries
-4) User-based range queries (needs user)
-5) Sessions (needs users)
+3) Threaded replies
+4) Date- and time-based range queries
+5) User-based range queries (needs user)
 
 Extension 1: Users and User Keys
     Endpoint: GET /users
@@ -102,8 +102,85 @@ Extension 2: User Profiles (Needs User)
               "join_date": "2023-01-01T12:00:00",
               "post_count": 42
             }
-
-Extension 3: Date- and Time-Based Range Queries
+            
+Extension 3: Threaded Replies
+    Endpoint: POST /api/posts/{postId}/replies
+    Description: Create a new threaded reply for a specific post.
+    Request Body:
+    {
+      "text": "The content of the threaded reply",
+      "parentReplyId": "optional parent reply ID, null if top-level reply"
+    }
+    Response:
+    201 Created - Successfully created the threaded reply.
+    400 Bad Request - Invalid request body.
+    404 Not Found - Post not found.
+    
+    2. Get Threaded Replies for a Post
+    Endpoint: GET /api/posts/{postId}/replies
+    Description: Retrieve all threaded replies for a specific post.
+    Response:
+    json
+    Copy code
+    [
+      {
+        "id": "replyId",
+        "text": "The content of the threaded reply",
+        "createdAt": "timestamp",
+        "user": {
+          "id": "userId",
+          "username": "username"
+        },
+        "replies": [
+          {
+            "id": "nestedReplyId",
+            "text": "The content of the nested reply",
+            "createdAt": "timestamp",
+            "user": {
+              "id": "userId",
+              "username": "username"
+            }
+          },
+          // ... more nested replies
+        ]
+      },
+      // ... more top-level replies
+    ]
+    Response Codes:
+    200 OK - Successfully retrieved threaded replies.
+    404 Not Found - Post not found.
+    
+    3. Get Single Threaded Reply
+    
+    Endpoint: GET /api/posts/{postId}/replies/{replyId}
+    Description: Retrieve a single threaded reply.
+    Response:
+    {
+      "id": "replyId",
+      "text": "The content of the threaded reply",
+      "createdAt": "timestamp",
+      "user": {
+        "id": "userId",
+        "username": "username"
+      },
+      "replies": [
+        {
+          "id": "nestedReplyId",
+          "text": "The content of the nested reply",
+          "createdAt": "timestamp",
+          "user": {
+            "id": "userId",
+            "username": "username"
+          }
+        },
+        // ... more nested replies
+      ]
+    }
+    Response Codes:
+    200 OK - Successfully retrieved the threaded reply.
+    404 Not Found - Reply or post not found.
+    
+Extension 4: Date- and Time-Based Range Queries
     Endpoint: GET /posts/date-range
     Description: Retrieve posts within a specified date and time range.
     Query Parameters:
@@ -123,7 +200,7 @@ Extension 3: Date- and Time-Based Range Queries
               }
             ]
 
-Extension 4: User-Based Range Queries (Needs User)
+Extension 5: User-Based Range Queries (Needs User)
     Endpoint: GET /user/{user_id}/posts
     Description: Retrieve posts created by a specific user within a specified date and time range.
     Parameters:
@@ -203,9 +280,47 @@ Extension 2: User Profiles (Needs User)
     Steps:
     Send a GET request to /user/{user_id}/profile.
     Check if the response matches the expected user profile.
+    
+Extension 3: Threaded Replies
+
+    Testing Framework:
+
+    Test Suite: Utilized a combination of unittest and integration testing frameworks.
+    Mock Data: Generated test data with various threaded reply structures for comprehensive testing.
+    Tests:
+
+    Test Create Threaded Reply Endpoint:
+    Description: Validates the /api/posts/{postId}/replies endpoint for creating threaded replies.
+    Steps:
+    - Send a POST request to /api/posts/{postId}/replies with valid and invalid payloads.
+    - Check for the expected HTTP response codes and verify the creation of threaded replies.
+
+    Test Get Threaded Replies for a Post Endpoint:
+    Description: Confirms the /api/posts/{postId}/replies endpoint retrieves threaded replies for a post.
+    Steps:
+    - Send a GET request to /api/posts/{postId}/replies.
+    - Examine the response structure for correctness and check for the presence of threaded replies.
+
+    Test Get Single Threaded Reply Endpoint:
+    Description: Validates the /api/posts/{postId}/replies/{replyId} endpoint for retrieving a single threaded reply.
+    Steps:
+    - Send a GET request to /api/posts/{postId}/replies/{replyId}.
+    - Verify the response structure and confirm the retrieval of the specified threaded reply.
+
+    Integration Test Create and Retrieve Threaded Replies:
+    Description: End-to-end testing for creating and retrieving threaded replies.
+    Steps:
+    - Simulate user interactions: create a post, add threaded replies, and retrieve the post with replies.
+    - Ensure the retrieved post contains the expected threaded reply structure.
+
+    Integration Test Error Handling:
+    Description: Validates error handling scenarios for the Threaded Replies extension.
+    Steps:
+    - Test creating threaded replies for a non-existent post and verify the 404 Not Found status.
+    - Test retrieving threaded replies for a non-existent post and confirm the 404 Not Found status.
 
 
-Extension 3: Date- and Time-Based Range Queries
+Extension 4: Date- and Time-Based Range Queries
     Testing Framework:
     
     Test Suite: Leveraged the unittest framework.
@@ -219,7 +334,7 @@ Extension 3: Date- and Time-Based Range Queries
     Check if the response contains posts within the specified date range.
     
     
-Extension 4: User-Based Range Queries (Needs User)
+Extension 5: User-Based Range Queries (Needs User)
     Testing Framework:
     
     Test Suite: Integrated with the existing unittest suite.
@@ -231,41 +346,3 @@ Extension 4: User-Based Range Queries (Needs User)
     Steps:
     Send a GET request to /user/{user_id}/posts with start_date and end_date parameters.
     Check if the response contains posts by the specified user within the date range.
-
-
-Extension 5: Sessions (Needs Users)
-
-    Testing Framework:
-    
-    Test Suite: Continued using the unittest framework.
-    Mock Data: Simulated user login and logout scenarios.
-    Tests:
-    
-    Test User Login:
-    Description: Validates that the /user/{user_id}/login endpoint successfully logs in a user and creates a session.
-    Steps:
-    Send a POST request to /user/{user_id}/login with user credentials.
-    Check if the response contains a valid session token and expiration time.
-    Test User Logout:
-    Description: Confirms that the /user/{user_id}/logout endpoint logs out a user and invalidates the session.
-    Steps:
-    Send a POST request to /user/{user_id}/logout.
-    Check if the response indicates a successful logout and an invalidated session.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
